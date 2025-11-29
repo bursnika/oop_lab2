@@ -1,0 +1,389 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:LibraryXmlProcessor.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="1300" d:DesignHeight="800"
+        x:Class="LibraryXmlProcessor.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="Кафедральна бібліотека - XML процесор"
+        Width="1300" Height="800"
+        WindowStartupLocation="CenterScreen"
+        Background="#FFF5F7">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+    <Window.Styles>
+        <Style Selector="Button">
+            <Setter Property="FontFamily" Value="Segoe UI, Arial, sans-serif"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="Margin" Value="4"/>
+        </Style>
+
+        <Style Selector="Button:pointerover">
+            <Setter Property="Opacity" Value="0.85"/>
+        </Style>
+
+        <Style Selector="TextBlock">
+            <Setter Property="FontFamily" Value="Segoe UI, Arial, sans-serif"/>
+        </Style>
+
+        <Style Selector="TextBox">
+            <Setter Property="FontFamily" Value="Segoe UI, Consolas, monospace"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Foreground" Value="#333333"/>
+        </Style>
+
+        <Style Selector="ComboBox">
+            <Setter Property="FontFamily" Value="Segoe UI, Arial, sans-serif"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="CornerRadius" Value="6"/>
+        </Style>
+    </Window.Styles>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header with gradient -->
+        <Border Grid.Row="0" CornerRadius="12" Margin="0,0,0,15">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
+                    <GradientStop Color="#FFB6C1" Offset="0"/>
+                    <GradientStop Color="#98D8C8" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+            <Grid Margin="25,20">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                    <TextBlock Text="📚" FontSize="32" Margin="0,0,12,0"/>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="Кафедральна бібліотека"
+                                   FontSize="26" FontWeight="Bold" Foreground="White"
+                                   Margin="0,0,0,2"/>
+                        <TextBlock Text="Система обробки XML документів"
+                                   FontSize="14" Foreground="#FFFFFF" Opacity="0.9"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <Border HorizontalAlignment="Right" VerticalAlignment="Center"
+                        Background="#FFFFFF" Padding="12,8" CornerRadius="20">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="☁️" FontSize="16" Margin="0,0,6,0"/>
+                        <TextBlock Text="{Binding IsGoogleDriveConnected, StringFormat='Google Drive: {0}'}"
+                                   FontSize="13" FontWeight="SemiBold"
+                                   Foreground="#666666"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- File Selection -->
+        <Border Grid.Row="1" Background="White" CornerRadius="12" Padding="20" Margin="0,0,0,15">
+            <Border.Effect>
+                <DropShadowEffect Color="#20000000" BlurRadius="15" OffsetX="0" OffsetY="2"/>
+            </Border.Effect>
+            <StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+                    <TextBlock Text="📁" FontSize="20" Margin="0,0,8,0"/>
+                    <TextBlock Text="Вибір файлів" FontSize="17" FontWeight="Bold"
+                               Foreground="#333333"/>
+                </StackPanel>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="15"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0" Background="#FFF9FB" CornerRadius="8" Padding="15">
+                        <StackPanel>
+                            <Button Command="{Binding SelectXmlFileCommand}"
+                                    HorizontalAlignment="Stretch" Margin="0,0,0,10">
+                                <Button.Background>
+                                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
+                                        <GradientStop Color="#FFD1DC" Offset="0"/>
+                                        <GradientStop Color="#FFB6C1" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Button.Background>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <TextBlock Text="📄" FontSize="16" Margin="0,0,8,0"/>
+                                    <TextBlock Text="Вибрати XML файл" Foreground="White"/>
+                                </StackPanel>
+                            </Button>
+                            <TextBlock Text="{Binding XmlFilePath}" TextWrapping="Wrap"
+                                       FontSize="11" Foreground="#999999" MaxHeight="45"
+                                       TextTrimming="CharacterEllipsis"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="2" Background="#F5FCF9" CornerRadius="8" Padding="15">
+                        <StackPanel>
+                            <Button Command="{Binding SelectXsltFileCommand}"
+                                    HorizontalAlignment="Stretch" Margin="0,0,0,10">
+                                <Button.Background>
+                                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
+                                        <GradientStop Color="#A8E6CF" Offset="0"/>
+                                        <GradientStop Color="#98D8C8" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Button.Background>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <TextBlock Text="🎨" FontSize="16" Margin="0,0,8,0"/>
+                                    <TextBlock Text="Вибрати XSLT файл" Foreground="White"/>
+                                </StackPanel>
+                            </Button>
+                            <TextBlock Text="{Binding XsltFilePath}" TextWrapping="Wrap"
+                                       FontSize="11" Foreground="#999999" MaxHeight="45"
+                                       TextTrimming="CharacterEllipsis"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </StackPanel>
+        </Border>
+
+        <!-- Parser and Entity Selection -->
+        <Border Grid.Row="2" Background="White" CornerRadius="12" Padding="20" Margin="0,0,0,15">
+            <Border.Effect>
+                <DropShadowEffect Color="#20000000" BlurRadius="15" OffsetX="0" OffsetY="2"/>
+            </Border.Effect>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="15"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0">
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                        <TextBlock Text="⚙️" FontSize="18" Margin="0,0,8,0"/>
+                        <TextBlock Text="Тип парсера (Strategy Pattern)"
+                                   FontSize="15" FontWeight="SemiBold" Foreground="#333333"/>
+                    </StackPanel>
+                    <ComboBox ItemsSource="{Binding ParserTypes}"
+                              SelectedItem="{Binding SelectedParserType}"
+                              HorizontalAlignment="Stretch"
+                              Background="#FFF9FB"
+                              BorderBrush="#FFD1DC"
+                              Foreground="#333333"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="2">
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                        <TextBlock Text="📋" FontSize="18" Margin="0,0,8,0"/>
+                        <TextBlock Text="Тип сутності"
+                                   FontSize="15" FontWeight="SemiBold" Foreground="#333333"/>
+                    </StackPanel>
+                    <ComboBox ItemsSource="{Binding EntityTypes}"
+                              SelectedItem="{Binding SelectedEntityType}"
+                              HorizontalAlignment="Stretch"
+                              Background="#F5FCF9"
+                              BorderBrush="#A8E6CF"
+                              Foreground="#333333"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Search Filters -->
+        <Border Grid.Row="3" Background="White" CornerRadius="12" Padding="20" Margin="0,0,0,15">
+            <Border.Effect>
+                <DropShadowEffect Color="#20000000" BlurRadius="15" OffsetX="0" OffsetY="2"/>
+            </Border.Effect>
+            <StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+                    <TextBlock Text="🔍" FontSize="20" Margin="0,0,8,0"/>
+                    <TextBlock Text="Фільтри пошуку" FontSize="17" FontWeight="Bold"
+                               Foreground="#333333"/>
+                </StackPanel>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="Атрибут" Margin="0,0,0,8"
+                                   FontSize="13" FontWeight="SemiBold" Foreground="#666666"/>
+                        <ComboBox ItemsSource="{Binding AvailableAttributes}"
+                                  SelectedItem="{Binding SelectedAttribute}"
+                                  HorizontalAlignment="Stretch"
+                                  Background="#FFF9FB"
+                                  BorderBrush="#FFD1DC"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="Значення для фільтрації" Margin="0,0,0,8"
+                                   FontSize="13" FontWeight="SemiBold" Foreground="#666666"/>
+                        <TextBox Text="{Binding FilterValue}"
+                                 Watermark="Введіть значення..."
+                                 Background="#F5FCF9"
+                                 BorderBrush="#A8E6CF"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="4" VerticalAlignment="Bottom">
+                        <Button Command="{Binding SearchCommand}"
+                                Padding="25,10">
+                            <Button.Background>
+                                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
+                                    <GradientStop Color="#FFB6C1" Offset="0"/>
+                                    <GradientStop Color="#98D8C8" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Button.Background>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="🔎" FontSize="16" Margin="0,0,8,0"/>
+                                <TextBlock Text="Пошук" Foreground="White" FontWeight="Bold"/>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+        </Border>
+
+        <!-- Output Area -->
+        <Border Grid.Row="4" Background="White" CornerRadius="12" Padding="15" Margin="0,0,0,15">
+            <Border.Effect>
+                <DropShadowEffect Color="#20000000" BlurRadius="15" OffsetX="0" OffsetY="2"/>
+            </Border.Effect>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="5,5,5,10">
+                    <TextBlock Text="💬" FontSize="18" Margin="0,0,8,0"/>
+                    <TextBlock Text="Результати" FontSize="15" FontWeight="Bold"
+                               Foreground="#333333"/>
+                </StackPanel>
+
+                <Border Grid.Row="1" Background="#FAFAFA" CornerRadius="8"
+                        BorderBrush="#E0E0E0" BorderThickness="1">
+                    <ScrollViewer Padding="10">
+                        <TextBox Text="{Binding OutputText}"
+                                 IsReadOnly="True"
+                                 TextWrapping="Wrap"
+                                 Background="Transparent"
+                                 BorderThickness="0"
+                                 FontFamily="Consolas, Courier New, monospace"
+                                 FontSize="13"
+                                 Foreground="#333333"
+                                 AcceptsReturn="True"/>
+                    </ScrollViewer>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- Action Buttons -->
+        <Border Grid.Row="5" CornerRadius="12" Padding="15">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
+                    <GradientStop Color="#FFE5EC" Offset="0"/>
+                    <GradientStop Color="#E5F9F3" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Column="0" Command="{Binding TransformToHtmlCommand}">
+                    <Button.Background>
+                        <SolidColorBrush Color="#FFD4A5"/>
+                    </Button.Background>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <TextBlock Text="🔄" FontSize="14" Margin="0,0,6,0"/>
+                        <TextBlock Text="Трансформація" Foreground="White" FontSize="12"/>
+                    </StackPanel>
+                </Button>
+
+                <Button Grid.Column="1" Command="{Binding ExportToXmlCommand}">
+                    <Button.Background>
+                        <SolidColorBrush Color="#B4E7CE"/>
+                    </Button.Background>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <TextBlock Text="💾" FontSize="14" Margin="0,0,6,0"/>
+                        <TextBlock Text="Експорт XML" Foreground="White" FontSize="12"/>
+                    </StackPanel>
+                </Button>
+
+                <Button Grid.Column="2" Command="{Binding ExportToHtmlCommand}">
+                    <Button.Background>
+                        <SolidColorBrush Color="#A8E6CF"/>
+                    </Button.Background>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <TextBlock Text="📝" FontSize="14" Margin="0,0,6,0"/>
+                        <TextBlock Text="Експорт HTML" Foreground="White" FontSize="12"/>
+                    </StackPanel>
+                </Button>
+
+                <Button Grid.Column="3" Command="{Binding UploadToGoogleDriveCommand}">
+                    <Button.Background>
+                        <SolidColorBrush Color="#98D8C8"/>
+                    </Button.Background>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <TextBlock Text="☁️" FontSize="14" Margin="0,0,6,0"/>
+                        <TextBlock Text="Google Drive" Foreground="White" FontSize="12"/>
+                    </StackPanel>
+                </Button>
+
+                <Button Grid.Column="4" Command="{Binding OpenLogFileCommand}">
+                    <Button.Background>
+                        <SolidColorBrush Color="#FFB6C1"/>
+                    </Button.Background>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <TextBlock Text="📊" FontSize="14" Margin="0,0,6,0"/>
+                        <TextBlock Text="Відкрити Лог" Foreground="White" FontSize="12"/>
+                    </StackPanel>
+                </Button>
+
+                <Button Grid.Column="5" Command="{Binding ClearCommand}">
+                    <Button.Background>
+                        <SolidColorBrush Color="#FFC9D6"/>
+                    </Button.Background>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <TextBlock Text="🧹" FontSize="14" Margin="0,0,6,0"/>
+                        <TextBlock Text="Clear" Foreground="White" FontSize="12"/>
+                    </StackPanel>
+                </Button>
+
+                <Button Grid.Column="6" Click="OnExitClick">
+                    <Button.Background>
+                        <SolidColorBrush Color="#FFB0B0"/>
+                    </Button.Background>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <TextBlock Text="🚪" FontSize="14" Margin="0,0,6,0"/>
+                        <TextBlock Text="Вихід" Foreground="White" FontSize="12"/>
+                    </StackPanel>
+                </Button>
+            </Grid>
+        </Border>
+    </Grid>
+
+</Window>
