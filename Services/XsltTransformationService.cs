@@ -14,7 +14,9 @@ public class XsltTransformationService
     {
         return await Task.Run(() =>
         {
-            var outputPath = Path.Combine(Directory.GetCurrentDirectory(), "Exports");
+            // Go up from bin/Debug/net9.0 to project root, then to Exports
+            var projectRoot = Path.GetFullPath(Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "..", "..", ".."));
+            var outputPath = Path.Combine(projectRoot, "Exports");
             if (!Directory.Exists(outputPath))
             {
                 Directory.CreateDirectory(outputPath);

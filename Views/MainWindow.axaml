@@ -45,11 +45,36 @@
             <Setter Property="Foreground" Value="#333333"/>
         </Style>
 
+        <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
+            <Setter Property="Background" Value="White"/>
+        </Style>
+
+        <Style Selector="TextBox:pointerover">
+            <Setter Property="Foreground" Value="#333333"/>
+        </Style>
+
+        <Style Selector="TextBox:focus">
+            <Setter Property="Foreground" Value="#333333"/>
+        </Style>
+
         <Style Selector="ComboBox">
             <Setter Property="FontFamily" Value="Segoe UI, Arial, sans-serif"/>
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="Padding" Value="10"/>
             <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Foreground" Value="#333333"/>
+        </Style>
+
+        <Style Selector="Button TextBlock">
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+
+        <Style Selector="Button:pointerover TextBlock">
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+
+        <Style Selector="Button:pressed TextBlock">
+            <Setter Property="Foreground" Value="White"/>
         </Style>
     </Window.Styles>
 
@@ -103,102 +128,51 @@
             <StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
                     <TextBlock Text="📁" FontSize="20" Margin="0,0,8,0"/>
-                    <TextBlock Text="Вибір файлів" FontSize="17" FontWeight="Bold"
+                    <TextBlock Text="Вибір XML файлу" FontSize="17" FontWeight="Bold"
                                Foreground="#333333"/>
                 </StackPanel>
 
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="15"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-
-                    <Border Grid.Column="0" Background="#FFF9FB" CornerRadius="8" Padding="15">
-                        <StackPanel>
-                            <Button Command="{Binding SelectXmlFileCommand}"
-                                    HorizontalAlignment="Stretch" Margin="0,0,0,10">
-                                <Button.Background>
-                                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
-                                        <GradientStop Color="#FFD1DC" Offset="0"/>
-                                        <GradientStop Color="#FFB6C1" Offset="1"/>
-                                    </LinearGradientBrush>
-                                </Button.Background>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <TextBlock Text="📄" FontSize="16" Margin="0,0,8,0"/>
-                                    <TextBlock Text="Вибрати XML файл" Foreground="White"/>
-                                </StackPanel>
-                            </Button>
-                            <TextBlock Text="{Binding XmlFilePath}" TextWrapping="Wrap"
-                                       FontSize="11" Foreground="#999999" MaxHeight="45"
-                                       TextTrimming="CharacterEllipsis"/>
-                        </StackPanel>
-                    </Border>
-
-                    <Border Grid.Column="2" Background="#F5FCF9" CornerRadius="8" Padding="15">
-                        <StackPanel>
-                            <Button Command="{Binding SelectXsltFileCommand}"
-                                    HorizontalAlignment="Stretch" Margin="0,0,0,10">
-                                <Button.Background>
-                                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
-                                        <GradientStop Color="#A8E6CF" Offset="0"/>
-                                        <GradientStop Color="#98D8C8" Offset="1"/>
-                                    </LinearGradientBrush>
-                                </Button.Background>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <TextBlock Text="🎨" FontSize="16" Margin="0,0,8,0"/>
-                                    <TextBlock Text="Вибрати XSLT файл" Foreground="White"/>
-                                </StackPanel>
-                            </Button>
-                            <TextBlock Text="{Binding XsltFilePath}" TextWrapping="Wrap"
-                                       FontSize="11" Foreground="#999999" MaxHeight="45"
-                                       TextTrimming="CharacterEllipsis"/>
-                        </StackPanel>
-                    </Border>
-                </Grid>
+                <Border Background="#FFF9FB" CornerRadius="8" Padding="15">
+                    <StackPanel>
+                        <Button Command="{Binding SelectXmlFileCommand}"
+                                HorizontalAlignment="Stretch" Margin="0,0,0,10">
+                            <Button.Background>
+                                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
+                                    <GradientStop Color="#FFD1DC" Offset="0"/>
+                                    <GradientStop Color="#FFB6C1" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Button.Background>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <TextBlock Text="📄" FontSize="16" Margin="0,0,8,0"/>
+                                <TextBlock Text="Вибрати XML файл" Foreground="White"/>
+                            </StackPanel>
+                        </Button>
+                        <TextBlock Text="{Binding XmlFilePath}" TextWrapping="Wrap"
+                                   FontSize="11" Foreground="#999999" MaxHeight="45"
+                                   TextTrimming="CharacterEllipsis"/>
+                    </StackPanel>
+                </Border>
             </StackPanel>
         </Border>
 
-        <!-- Parser and Entity Selection -->
+        <!-- Parser Selection -->
         <Border Grid.Row="2" Background="White" CornerRadius="12" Padding="20" Margin="0,0,0,15">
             <Border.Effect>
                 <DropShadowEffect Color="#20000000" BlurRadius="15" OffsetX="0" OffsetY="2"/>
             </Border.Effect>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="15"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-
-                <StackPanel Grid.Column="0">
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                        <TextBlock Text="⚙️" FontSize="18" Margin="0,0,8,0"/>
-                        <TextBlock Text="Тип парсера (Strategy Pattern)"
-                                   FontSize="15" FontWeight="SemiBold" Foreground="#333333"/>
-                    </StackPanel>
-                    <ComboBox ItemsSource="{Binding ParserTypes}"
-                              SelectedItem="{Binding SelectedParserType}"
-                              HorizontalAlignment="Stretch"
-                              Background="#FFF9FB"
-                              BorderBrush="#FFD1DC"
-                              Foreground="#333333"/>
+            <StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <TextBlock Text="⚙️" FontSize="18" Margin="0,0,8,0"/>
+                    <TextBlock Text="Тип парсера (Strategy Pattern)"
+                               FontSize="15" FontWeight="SemiBold" Foreground="#333333"/>
                 </StackPanel>
-
-                <StackPanel Grid.Column="2">
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                        <TextBlock Text="📋" FontSize="18" Margin="0,0,8,0"/>
-                        <TextBlock Text="Тип сутності"
-                                   FontSize="15" FontWeight="SemiBold" Foreground="#333333"/>
-                    </StackPanel>
-                    <ComboBox ItemsSource="{Binding EntityTypes}"
-                              SelectedItem="{Binding SelectedEntityType}"
-                              HorizontalAlignment="Stretch"
-                              Background="#F5FCF9"
-                              BorderBrush="#A8E6CF"
-                              Foreground="#333333"/>
-                </StackPanel>
-            </Grid>
+                <ComboBox ItemsSource="{Binding ParserTypes}"
+                          SelectedItem="{Binding SelectedParserType}"
+                          HorizontalAlignment="Stretch"
+                          Background="#FFF9FB"
+                          BorderBrush="#FFD1DC"
+                          Foreground="#333333"/>
+            </StackPanel>
         </Border>
 
         <!-- Search Filters -->
@@ -217,22 +191,34 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="2*"/>
                         <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="10"/>
                         <ColumnDefinition Width="3*"/>
                         <ColumnDefinition Width="10"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
                     <StackPanel Grid.Column="0">
-                        <TextBlock Text="Атрибут" Margin="0,0,0,8"
+                        <TextBlock Text="Тег (елемент XML)" Margin="0,0,0,8"
                                    FontSize="13" FontWeight="SemiBold" Foreground="#666666"/>
-                        <ComboBox ItemsSource="{Binding AvailableAttributes}"
-                                  SelectedItem="{Binding SelectedAttribute}"
+                        <ComboBox ItemsSource="{Binding AvailableTags}"
+                                  SelectedItem="{Binding SelectedTag}"
                                   HorizontalAlignment="Stretch"
                                   Background="#FFF9FB"
                                   BorderBrush="#FFD1DC"/>
                     </StackPanel>
 
                     <StackPanel Grid.Column="2">
+                        <TextBlock Text="Атрибут тега" Margin="0,0,0,8"
+                                   FontSize="13" FontWeight="SemiBold" Foreground="#666666"/>
+                        <ComboBox ItemsSource="{Binding AvailableAttributes}"
+                                  SelectedItem="{Binding SelectedAttribute}"
+                                  HorizontalAlignment="Stretch"
+                                  Background="#FFF0F5"
+                                  BorderBrush="#FFB6C1"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="4">
                         <TextBlock Text="Значення для фільтрації" Margin="0,0,0,8"
                                    FontSize="13" FontWeight="SemiBold" Foreground="#666666"/>
                         <TextBox Text="{Binding FilterValue}"
@@ -241,7 +227,7 @@
                                  BorderBrush="#A8E6CF"/>
                     </StackPanel>
 
-                    <StackPanel Grid.Column="4" VerticalAlignment="Bottom">
+                    <StackPanel Grid.Column="6" VerticalAlignment="Bottom">
                         <Button Command="{Binding SearchCommand}"
                                 Padding="25,10">
                             <Button.Background>
@@ -287,7 +273,9 @@
                                  BorderThickness="0"
                                  FontFamily="Consolas, Courier New, monospace"
                                  FontSize="13"
-                                 Foreground="#333333"
+                                 Foreground="#1a1a1a"
+                                 SelectionBrush="#4DA8E0C8"
+                                 SelectionForegroundBrush="#1a1a1a"
                                  AcceptsReturn="True"/>
                     </ScrollViewer>
                 </Border>

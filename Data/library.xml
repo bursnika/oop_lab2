@@ -1,224 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Library>
-  <Books>
-    <Book id="1" isbn="978-0-13-468599-1" year="2018" available="true" bookType="Навчальний посібник">
-      <Title>Clean Code</Title>
-      <Author>
-        <FirstName>Robert</FirstName>
-        <LastName>Martin</LastName>
-        <MiddleName>C.</MiddleName>
-        <FullName>Martin Robert C.</FullName>
-      </Author>
-      <Annotation>A Handbook of Agile Software Craftsmanship. Навчає писати чистий, зрозумілий код. Книга містить практичні поради та приклади коду.</Annotation>
-      <Category>Software Engineering</Category>
-      <Publisher>Prentice Hall</Publisher>
-      <Pages>464</Pages>
-      <Language>English</Language>
-      <Edition>1st Edition</Edition>
-      <QualificationFeatures>
-        <Feature>Рекомендовано для студентів ІТ-спеціальностей</Feature>
-        <Feature>Практичний посібник</Feature>
-        <Feature>Міжнародне визнання</Feature>
-      </QualificationFeatures>
-    </Book>
-    <Book id="2" isbn="978-0-201-63361-0" year="1999" bookType="Монографія">
-      <Title>Design Patterns</Title>
-      <Author>
-        <FirstName>Erich</FirstName>
-        <LastName>Gamma</LastName>
-        <FullName>Gamma Erich</FullName>
-      </Author>
-      <Author>
-        <FirstName>Richard</FirstName>
-        <LastName>Helm</LastName>
-        <FullName>Helm Richard</FullName>
-      </Author>
-      <Author>
-        <FirstName>Ralph</FirstName>
-        <LastName>Johnson</LastName>
-        <FullName>Johnson Ralph</FullName>
-      </Author>
-      <Author>
-        <FirstName>John</FirstName>
-        <LastName>Vlissides</LastName>
-        <FullName>Vlissides John</FullName>
-      </Author>
-      <Annotation>Elements of Reusable Object-Oriented Software. Класична книга про патерни проектування. Описує 23 фундаментальних патерни ООП.</Annotation>
-      <Category>Software Engineering</Category>
-      <Publisher>Addison-Wesley</Publisher>
-      <Pages>395</Pages>
-      <Language>English</Language>
-      <Edition>1st Edition</Edition>
-      <QualificationFeatures>
-        <Feature>Класичний підручник з ООП</Feature>
-        <Feature>Обов'язкова література</Feature>
-        <Feature>Gang of Four</Feature>
-      </QualificationFeatures>
-    </Book>
-    <Book id="3" isbn="978-0-13-235088-4" year="2008" available="true" language="English" bookType="Підручник">
-      <Title>Clean Architecture</Title>
-      <Author>
-        <FirstName>Robert</FirstName>
-        <LastName>Martin</LastName>
-        <MiddleName>C.</MiddleName>
-        <FullName>Martin Robert C.</FullName>
-      </Author>
-      <Annotation>A Craftsman's Guide to Software Structure. Про архітектуру програмного забезпечення. Розглядає принципи SOLID, архітектурні патерни.</Annotation>
-      <Category>Software Architecture</Category>
-      <Publisher>Prentice Hall</Publisher>
-      <Pages>432</Pages>
-      <Language>English</Language>
-      <Edition>1st Edition</Edition>
-      <QualificationFeatures>
-        <Feature>Рекомендовано МОН України</Feature>
-        <Feature>Для магістрів та аспірантів</Feature>
-        <Feature>Сучасні підходи до архітектури</Feature>
-      </QualificationFeatures>
-    </Book>
-    <Book id="4" isbn="978-0-596-52068-7" year="2008" available="false" bookType="Навчальний посібник">
-      <Title>JavaScript: The Good Parts</Title>
-      <Author>
-        <FirstName>Douglas</FirstName>
-        <LastName>Crockford</LastName>
-        <FullName>Crockford Douglas</FullName>
-      </Author>
-      <Annotation>Книга про кращі практики JavaScript. Описує ефективні підходи до програмування на JS, уникнення поширених помилок.</Annotation>
-      <Category>Programming Languages</Category>
-      <Publisher>O'Reilly Media</Publisher>
-      <Pages>176</Pages>
-      <Language>English</Language>
-      <Edition>1st Edition</Edition>
-      <QualificationFeatures>
-        <Feature>Практичний посібник</Feature>
-        <Feature>Для веб-розробників</Feature>
-      </QualificationFeatures>
-    </Book>
-    <Book id="5" isbn="978-0-321-12521-7" year="2004" available="true" language="English" edition="2nd" bookType="Монографія">
-      <Title>Domain-Driven Design</Title>
-      <Author>
-        <FirstName>Eric</FirstName>
-        <LastName>Evans</LastName>
-        <FullName>Evans Eric</FullName>
-      </Author>
-      <Annotation>Tackling Complexity in the Heart of Software. Про предметно-орієнтоване проектування. Методологія розробки складних систем.</Annotation>
-      <Category>Software Architecture</Category>
-      <Publisher>Addison-Wesley</Publisher>
-      <Pages>560</Pages>
-      <Language>English</Language>
-      <Edition>2nd Edition</Edition>
-      <QualificationFeatures>
-        <Feature>Фундаментальна праця з DDD</Feature>
-        <Feature>Для досвідчених розробників</Feature>
-        <Feature>Methodology guide</Feature>
-      </QualificationFeatures>
-    </Book>
-    <Book id="6" isbn="978-0-134-68599-2" year="2017" bookType="Підручник">
-      <Title>Refactoring</Title>
-      <Author>
-        <FirstName>Martin</FirstName>
-        <LastName>Fowler</LastName>
-        <FullName>Fowler Martin</FullName>
-      </Author>
-      <Annotation>Improving the Design of Existing Code. Про рефакторинг коду. Каталог методів покращення структури коду без зміни поведінки.</Annotation>
-      <Category>Software Engineering</Category>
-      <Publisher>Addison-Wesley</Publisher>
-      <Pages>448</Pages>
-      <Language>English</Language>
-      <Edition>2nd Edition</Edition>
-      <QualificationFeatures>
-        <Feature>Класичний підручник</Feature>
-        <Feature>Каталог рефакторингів</Feature>
-        <Feature>Best practices</Feature>
-      </QualificationFeatures>
-    </Book>
-  </Books>
-  <Readers>
-    <Reader id="1" registrationDate="2023-01-15" status="active" gender="Чоловік">
-      <FirstName>Іван</FirstName>
-      <LastName>Петренко</LastName>
-      <MiddleName>Олександрович</MiddleName>
-      <FullName>Петренко Іван Олександрович</FullName>
-      <Faculty>Інформаційних технологій</Faculty>
-      <Department>Програмної інженерії</Department>
-      <Position>Студент</Position>
-      <Course>3</Course>
-      <Group>КН-301</Group>
-      <Email>ivan.petrenko@example.com</Email>
-      <Phone>+380501234567</Phone>
-      <BirthYear>2003</BirthYear>
-      <Address>м. Київ, вул. Хрещатик, 1</Address>
-    </Reader>
-    <Reader id="2" registrationDate="2022-09-01" status="active" membershipType="premium" gender="Жінка">
-      <FirstName>Марія</FirstName>
-      <LastName>Іваненко</LastName>
-      <MiddleName>Петрівна</MiddleName>
-      <FullName>Іваненко Марія Петрівна</FullName>
-      <Faculty>Інформаційних технологій</Faculty>
-      <Department>Комп'ютерних наук</Department>
-      <Position>Аспірант</Position>
-      <Email>maria.ivanenko@example.com</Email>
-      <Phone>+380501234567</Phone>
-      <BirthYear>1998</BirthYear>
-      <ScientificDegree>Магістр</ScientificDegree>
-      <ResearchTopic>Машинне навчання</ResearchTopic>
-    </Reader>
-    <Reader id="3" registrationDate="2020-03-10" status="active" gender="Чоловік">
-      <FirstName>Олексій</FirstName>
-      <LastName>Коваленко</LastName>
-      <MiddleName>Іванович</MiddleName>
-      <FullName>Коваленко Олексій Іванович</FullName>
-      <Faculty>Інформаційних технологій</Faculty>
-      <Department>Програмної інженерії</Department>
-      <Position>Викладач</Position>
-      <Email>oleksiy.kovalenko@example.com</Email>
-      <Phone>+380671234568</Phone>
-      <BirthYear>1985</BirthYear>
-      <ScientificDegree>Кандидат технічних наук</ScientificDegree>
-      <AcademicRank>Доцент</AcademicRank>
-    </Reader>
-    <Reader id="4" registrationDate="2023-09-01" status="active" membershipType="standard" gender="Жінка">
-      <FirstName>Наталія</FirstName>
-      <LastName>Шевченко</LastName>
-      <MiddleName>Володимирівна</MiddleName>
-      <FullName>Шевченко Наталія Володимирівна</FullName>
-      <Faculty>Інформаційних технологій</Faculty>
-      <Department>Штучного інтелекту</Department>
-      <Position>Студент</Position>
-      <Course>2</Course>
-      <Group>КН-201</Group>
-      <Email>natalia.shevchenko@example.com</Email>
-      <BirthYear>2004</BirthYear>
-    </Reader>
-    <Reader id="5" registrationDate="2021-02-20" status="inactive" gender="Чоловік">
-      <FirstName>Андрій</FirstName>
-      <LastName>Мельник</LastName>
-      <MiddleName>Сергійович</MiddleName>
-      <FullName>Мельник Андрій Сергійович</FullName>
-      <Faculty>Інформаційних технологій</Faculty>
-      <Department>Програмної інженерії</Department>
-      <Position>Доцент</Position>
-      <Email>andriy.melnyk@example.com</Email>
-      <Phone>+380671234567</Phone>
-      <BirthYear>1980</BirthYear>
-      <ScientificDegree>Доктор технічних наук</ScientificDegree>
-      <AcademicRank>Професор</AcademicRank>
-    </Reader>
-  </Readers>
-  <BorrowedBooks>
-    <Borrow borrowId="1" readerId="1" bookId="1" borrowDate="2024-01-15" dueDate="2024-02-15" status="active">
-      <Notes>Перше видання</Notes>
-    </Borrow>
-    <Borrow borrowId="2" readerId="2" bookId="3" borrowDate="2024-01-20" dueDate="2024-02-20" status="active" renewable="true">
-      <Notes>Продовжено один раз</Notes>
-    </Borrow>
-    <Borrow borrowId="3" readerId="1" bookId="2" borrowDate="2023-12-01" returnDate="2023-12-28" dueDate="2024-01-01" status="returned">
-      <Notes>Повернено вчасно</Notes>
-    </Borrow>
-    <Borrow borrowId="4" readerId="3" bookId="5" borrowDate="2024-01-10" dueDate="2024-03-10" status="active">
-      <Notes>Для викладацьких цілей - продовжений термін</Notes>
-    </Borrow>
-    <Borrow borrowId="5" readerId="4" bookId="6" borrowDate="2024-01-25" dueDate="2024-02-25" status="active" renewable="false">
-      <Notes>Останній екземпляр</Notes>
-    </Borrow>
-  </BorrowedBooks>
+  <Book id="1" title="Основи алгоритмізації C#" author="Трохимчук Р.М." reader="Іваненко Олег" year="2023" category="Програмування" isbn="978-966-001-123-4"/>
+  <Book id="2" title="Теорія ймовірностей" author="Гмурман В.Є." reader="Петренко Марія" year="2022" category="Математика" isbn="978-966-002-234-5"/>
+  <Book id="3" title="Кобзар" author="Шевченко Т.Г." reader="Сидоренко Іван" year="1840" category="Література" isbn="978-966-003-345-6"/>
+  <Book id="4" title="Дискретна математика" author="Нікітченко М.С." reader="Коваленко Анна" year="2021" category="Математика" isbn="978-966-004-456-7"/>
+  <Book id="5" title="Clean Code" author="Martin Robert" reader="Шевченко Олександр" year="2008" category="Програмування" isbn="978-013-468599-1"/>
+  <Book id="6" title="Design Patterns" author="Gamma Erich" reader="Іваненко Олег" year="1994" category="Програмування" isbn="978-020-163361-0"/>
+  <Book id="7" title="Алгоритми та структури даних" author="Кнут Дональд" reader="Бондаренко Юлія" year="1997" category="Програмування" isbn="978-966-005-567-8"/>
+  <Book id="8" title="Історія України" author="Грушевський М.С." reader="Петренко Марія" year="1898" category="Історія" isbn="978-966-006-678-9"/>
+  <Book id="9" title="Фізика для університетів" author="Сивухін Д.В." reader="Мельник Сергій" year="2020" category="Фізика" isbn="978-966-007-789-0"/>
+  <Book id="10" title="Введення в Python" author="Лутц Марк" reader="Коваленко Анна" year="2019" category="Програмування" isbn="978-149-205093-9"/>
+  <Book id="11" title="Базовий курс Java" author="Хорстманн Кей" reader="Сидоренко Іван" year="2021" category="Програмування" isbn="978-013-467901-0"/>
+  <Book id="12" title="Лісова пісня" author="Українка Леся" reader="Ткаченко Ольга" year="1911" category="Література" isbn="978-966-008-890-1"/>
+  <Book id="13" title="Економічна теорія" author="Мочерний С.В." reader="Бондаренко Юлія" year="2023" category="Економіка" isbn="978-966-009-901-2"/>
+  <Book id="14" title="Вища математика" author="Данко П.Є." reader="Мельник Сергій" year="2022" category="Математика" isbn="978-966-010-012-3"/>
+  <Book id="15" title="Майстер і Маргарита" author="Булгаков М.А." reader="Ткаченко Ольга" year="1967" category="Література" isbn="978-966-011-123-4"/>
+  <Book id="16" title="Операційні системи" author="Таненбаум Ендрю" reader="Шевченко Олександр" year="2015" category="Програмування" isbn="978-013-359162-0"/>
+  <Book id="17" title="Бази даних" author="Коннолі Томас" reader="Іваненко Олег" year="2020" category="Програмування" isbn="978-032-119539-3"/>
+  <Book id="18" title="Chemie für Dummies" author="Moore John" reader="Петренко Марія" year="2016" category="Хімія" isbn="978-352-770730-5"/>
+  <Book id="19" title="Capturing Light" author="Johnson Michael" reader="Бондаренко Юлія" year="2014" category="Мистецтво" isbn="978-024-182090-5"/>
+  <Book id="20" title="JavaScript: The Good Parts" author="Crockford Douglas" reader="Коваленко Анна" year="2008" category="Програмування" isbn="978-059-651774-8"/>
+
+  <Reader id="1" fullName="Іваненко Олег" faculty="Інформатики" course="3" email="ivanenko@univ.edu"/>
+  <Reader id="2" fullName="Петренко Марія" faculty="Математики" course="2" email="petrenko@univ.edu"/>
+  <Reader id="3" fullName="Сидоренко Іван" faculty="Філології" course="4" email="sydorenko@univ.edu"/>
+  <Reader id="4" fullName="Коваленко Анна" faculty="Інформатики" course="1" email="kovalenko@univ.edu"/>
+  <Reader id="5" fullName="Шевченко Олександр" faculty="Інформатики" course="3" email="shevchenko@univ.edu"/>
+  <Reader id="6" fullName="Бондаренко Юлія" faculty="Економіки" course="2" email="bondarenko@univ.edu"/>
+  <Reader id="7" fullName="Мельник Сергій" faculty="Фізики" course="3" email="melnyk@univ.edu"/>
+  <Reader id="8" fullName="Ткаченко Ольга" faculty="Філології" course="4" email="tkachenko@univ.edu"/>
 </Library>

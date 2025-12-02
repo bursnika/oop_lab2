@@ -31,9 +31,6 @@ public partial class MainWindowViewModel : ViewModelBase
     private string _xmlFilePath = string.Empty;
 
     [ObservableProperty]
-    private string _xsltFilePath = string.Empty;
-
-    [ObservableProperty]
     private string _outputText = "Виберіть XML файл для початку роботи...";
 
     [ObservableProperty]
@@ -48,15 +45,10 @@ public partial class MainWindowViewModel : ViewModelBase
     private string _selectedParserType = "LINQ to XML";
 
     [ObservableProperty]
-    private ObservableCollection<string> _entityTypes = new()
-    {
-        "Книги",
-        "Читачі",
-        "Видані книги"
-    };
+    private ObservableCollection<string> _availableTags = new();
 
     [ObservableProperty]
-    private string _selectedEntityType = "Книги";
+    private string? _selectedTag;
 
     [ObservableProperty]
     private ObservableCollection<string> _availableAttributes = new();
@@ -120,14 +112,7 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             XmlFilePath = defaultXmlPath;
             OutputText = $"✅ Завантажено XML файл за замовчуванням: {Path.GetFileName(XmlFilePath)}\n📂 Шлях: {XmlFilePath}\n\n💡 Виберіть тип сутності та натисніть 'Пошук' для перегляду даних";
-            LoadAvailableAttributes();
-        }
-
-        // Load default XSLT file
-        var defaultXsltPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "library.xslt");
-        if (File.Exists(defaultXsltPath))
-        {
-            XsltFilePath = defaultXsltPath;
+            LoadAvailableTags();
         }
     }
 
@@ -144,7 +129,7 @@ public partial class MainWindowViewModel : ViewModelBase
                 {
                     XmlFilePath = defaultPath;
                     OutputText = $"Вибрано XML файл: {Path.GetFileName(XmlFilePath)}";
-                    LoadAvailableAttributes();
+                    LoadAvailableTags();
                 }
                 return;
             }
@@ -172,57 +157,8 @@ public partial class MainWindowViewModel : ViewModelBase
             {
                 XmlFilePath = result[0].Path.LocalPath;
                 OutputText = $"✅ Вибрано XML файл: {Path.GetFileName(XmlFilePath)}\n📂 Шлях: {XmlFilePath}";
-                LoadAvailableAttributes();
+                LoadAvailableTags();
                 _logger.Log(LogLevel.Filtering, $"Завантажено XML файл: {Path.GetFileName(XmlFilePath)}");
-            }
-        }
-        catch (Exception ex)
-        {
-            OutputText = $"❌ Помилка вибору файлу: {ex.Message}";
-        }
-    }
-
-    [RelayCommand]
-    private async Task SelectXsltFile()
-    {
-        try
-        {
-            if (MainWindow?.StorageProvider == null)
-            {
-                // Fallback to default file
-                var defaultPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "library.xslt");
-                if (File.Exists(defaultPath))
-                {
-                    XsltFilePath = defaultPath;
-                    OutputText = $"Вибрано XSLT файл: {Path.GetFileName(XsltFilePath)}";
-                }
-                return;
-            }
-
-            var filePickerOptions = new FilePickerOpenOptions
-            {
-                Title = "Оберіть XSLT файл",
-                AllowMultiple = false,
-                FileTypeFilter = new[]
-                {
-                    new FilePickerFileType("XSLT Files")
-                    {
-                        Patterns = new[] { "*.xslt", "*.xsl" }
-                    },
-                    new FilePickerFileType("All Files")
-                    {
-                        Patterns = new[] { "*.*" }
-                    }
-                }
-            };
-
-            var result = await MainWindow.StorageProvider.OpenFilePickerAsync(filePickerOptions);
-
-            if (result.Count > 0)
-            {
-                XsltFilePath = result[0].Path.LocalPath;
-                OutputText = $"✅ Вибрано XSLT файл: {Path.GetFileName(XsltFilePath)}\n📂 Шлях: {XsltFilePath}";
-                _logger.Log(LogLevel.Transformation, $"Завантажено XSLT файл: {Path.GetFileName(XsltFilePath)}");
             }
         }
         catch (Exception ex)
@@ -240,72 +176,84 @@ public partial class MainWindowViewModel : ViewModelBase
             return;
         }
 
+        if (string.IsNullOrEmpty(SelectedTag))
+        {
+            OutputText = "❌ Спочатку оберіть тег для пошуку!";
+            return;
+        }
+
         try
         {
-            OutputText = "⏳ Починаю пошук...\n";
-            UpdateParser();
+            OutputText = "⏳ Починаю динамічний пошук...\n\n";
 
-            var criteria = new SearchCriteria();
-            if (!string.IsNullOrWhiteSpace(FilterValue) && !string.IsNullOrWhiteSpace(SelectedAttribute))
-            {
-                criteria.AddFilter(SelectedAttribute, FilterValue);
-            }
-
+            var doc = System.Xml.Linq.XDocument.Load(XmlFilePath);
             var results = new List<string>();
 
-            OutputText += $"📋 Тип сутності: {SelectedEntityType}\n";
-            OutputText += $"⚙️ Парсер: {_parserContext.GetCurrentParser().GetParserName()}\n";
-            OutputText += $"🔍 Фільтр: {criteria}\n\n";
+            // Get all elements with the selected tag
+            var elements = doc.Descendants(SelectedTag);
 
-            switch (SelectedEntityType)
+            // If attribute and filter value are specified, filter by attribute value
+            if (!string.IsNullOrWhiteSpace(SelectedAttribute) && !string.IsNullOrWhiteSpace(FilterValue))
             {
-                case "Книги":
-                    var books = _parserContext.ParseBooks(XmlFilePath, criteria.HasFilters ? criteria : null);
-                    OutputText += $"📚 Знайдено книг: {books.Count}\n\n";
-                    if (books.Count > 0)
-                    {
-                        results.AddRange(books.Select((b, index) => $"{index + 1}. {b.ToString()}"));
-                    }
-                    else
-                    {
-                        results.Add("Книг не знайдено за вказаними критеріями");
-                    }
-                    break;
+                elements = elements.Where(e =>
+                {
+                    var attrValue = e.Attribute(SelectedAttribute)?.Value;
+                    return attrValue != null && attrValue.Contains(FilterValue, StringComparison.OrdinalIgnoreCase);
+                });
 
-                case "Читачі":
-                    var readers = _parserContext.ParseReaders(XmlFilePath, criteria.HasFilters ? criteria : null);
-                    OutputText += $"👥 Знайдено читачів: {readers.Count}\n\n";
-                    if (readers.Count > 0)
-                    {
-                        results.AddRange(readers.Select((r, index) => $"{index + 1}. {r.ToString()}"));
-                    }
-                    else
-                    {
-                        results.Add("Читачів не знайдено за вказаними критеріями");
-                    }
-                    break;
-
-                case "Видані книги":
-                    var borrows = _parserContext.ParseBorrowedBooks(XmlFilePath, criteria.HasFilters ? criteria : null);
-                    OutputText += $"📖 Знайдено записів про видачу: {borrows.Count}\n\n";
-                    if (borrows.Count > 0)
-                    {
-                        results.AddRange(borrows.Select((b, index) => $"{index + 1}. {b.ToString()}"));
-                    }
-                    else
-                    {
-                        results.Add("Записів про видачу не знайдено за вказаними критеріями");
-                    }
-                    break;
-
-                default:
-                    OutputText += "❌ Невідомий тип сутності!\n";
-                    return;
+                OutputText += $"🔍 Пошук: Тег = <{SelectedTag}>, Атрибут = {SelectedAttribute}, Значення = \"{FilterValue}\"\n\n";
+            }
+            else
+            {
+                OutputText += $"🔍 Пошук: Всі елементи <{SelectedTag}>\n\n";
             }
 
-            OutputText += string.Join("\n", results);
+            var elementsList = elements.ToList();
+            OutputText += $"📊 Знайдено елементів: {elementsList.Count}\n\n";
 
-            _logger.Log(LogLevel.Filtering, $"Знайдено: {results.Count}, Параметри: {criteria}");
+            if (elementsList.Count > 0)
+            {
+                foreach (var (element, index) in elementsList.Select((e, i) => (e, i)))
+                {
+                    var sb = new System.Text.StringBuilder();
+                    sb.AppendLine($"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+                    sb.AppendLine($"📌 Результат #{index + 1}");
+                    sb.AppendLine($"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+
+                    // Show all attributes with beautiful formatting
+                    foreach (var attr in element.Attributes())
+                    {
+                        var attrName = GetBeautifulAttributeName(attr.Name.LocalName);
+                        sb.AppendLine($"   {attrName}: {attr.Value}");
+                    }
+
+                    // Show child elements (first level only)
+                    if (element.HasElements)
+                    {
+                        sb.AppendLine();
+                        foreach (var child in element.Elements())
+                        {
+                            var childValue = child.Value.Trim();
+                            if (childValue.Length > 100)
+                            {
+                                childValue = childValue.Substring(0, 100) + "...";
+                            }
+                            var childName = GetBeautifulAttributeName(child.Name.LocalName);
+                            sb.AppendLine($"   {childName}: {childValue}");
+                        }
+                    }
+
+                    results.Add(sb.ToString());
+                }
+
+                OutputText += string.Join("\n", results);
+            }
+            else
+            {
+                OutputText += "❌ Елементів не знайдено за вказаними критеріями";
+            }
+
+            _logger.Log(LogLevel.Filtering, $"Динамічний пошук: Тег={SelectedTag}, Атрибут={SelectedAttribute}, Знайдено={elementsList.Count}");
         }
         catch (Exception ex)
         {
@@ -323,18 +271,20 @@ public partial class MainWindowViewModel : ViewModelBase
             return;
         }
 
-        if (string.IsNullOrEmpty(XsltFilePath) || !File.Exists(XsltFilePath))
-        {
-            OutputText = "Спочатку оберіть XSLT файл!";
-            return;
-        }
-
         try
         {
-            var fileName = $"library_transformed_{DateTime.Now:yyyyMMdd_HHmmss}";
-            var outputPath = await _transformationService.TransformToHtmlAsync(XmlFilePath, XsltFilePath, fileName);
+            var xsltPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "library.xslt");
+            if (!File.Exists(xsltPath))
+            {
+                OutputText = "❌ XSLT файл не знайдено!";
+                return;
+            }
 
-            OutputText = $"HTML файл успішно створено:\n{outputPath}";
+            var fileName = $"library_transformed_{DateTime.Now:yyyyMMdd_HHmmss}";
+            var outputPath = await _transformationService.TransformToHtmlAsync(XmlFilePath, xsltPath, fileName);
+
+            OutputText = $"✅ HTML файл успішно створено:\n📂 {outputPath}";
+            _logger.Log(LogLevel.Transformation, $"Створено HTML файл: {Path.GetFileName(outputPath)}");
         }
         catch (Exception ex)
         {
@@ -377,30 +327,23 @@ public partial class MainWindowViewModel : ViewModelBase
             return;
         }
 
-        if (string.IsNullOrEmpty(XsltFilePath) || !File.Exists(XsltFilePath))
-        {
-            var defaultXslt = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "library.xslt");
-            if (File.Exists(defaultXslt))
-            {
-                XsltFilePath = defaultXslt;
-            }
-            else
-            {
-                OutputText = "Спочатку оберіть XSLT файл!";
-                return;
-            }
-        }
-
         try
         {
-            var factory = new HtmlExporterFactory(XsltFilePath);
+            var xsltPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "library.xslt");
+            if (!File.Exists(xsltPath))
+            {
+                OutputText = "❌ XSLT файл не знайдено!";
+                return;
+            }
+
+            var factory = new HtmlExporterFactory(xsltPath);
             factory.LoadXmlFile(XmlFilePath);
 
             var fileName = $"library_export_{DateTime.Now:yyyyMMdd_HHmmss}";
             var outputPath = await factory.ExportAsync(fileName);
 
             _logger.Log(LogLevel.Saving, $"Збережено відфільтрований фрагмент у файл {Path.GetFileName(outputPath)}");
-            OutputText = $"HTML файл успішно збережено:\n{outputPath}";
+            OutputText = $"✅ HTML файл успішно збережено:\n📂 {outputPath}";
         }
         catch (Exception ex)
         {
@@ -438,37 +381,37 @@ public partial class MainWindowViewModel : ViewModelBase
             return;
         }
 
-        if (string.IsNullOrEmpty(XmlFilePath) || !File.Exists(XmlFilePath))
-        {
-            OutputText = "❌ Спочатку оберіть XML файл!";
-            return;
-        }
-
         try
         {
-            OutputText = $"⏳ Завантаження файлу на Google Drive...\n";
-            OutputText += $"📄 Файл: {Path.GetFileName(XmlFilePath)}\n";
-            OutputText += $"📦 Розмір: {new FileInfo(XmlFilePath).Length / 1024.0:F2} KB\n\n";
-
-            var fileId = await _googleDriveService.UploadFileAsync(XmlFilePath);
-
-            if (fileId != null)
+            // Open Google Drive dialog
+            var dialogVm = new GoogleDriveDialogViewModel(_googleDriveService, XmlFilePath);
+            var dialog = new Views.GoogleDriveDialog
             {
-                OutputText += $"✅ Файл успішно завантажено на Google Drive!\n\n";
-                OutputText += $"🆔 File ID: {fileId}\n";
-                OutputText += $"📅 Час завантаження: {DateTime.Now:dd.MM.yyyy HH:mm:ss}\n\n";
-                OutputText += $"💡 Файл доступний у вашому Google Drive";
+                DataContext = dialogVm
+            };
+            dialogVm.SetDialogWindow(dialog);
 
-                _logger.Log(LogLevel.Saving, $"Завантажено на Google Drive: {Path.GetFileName(XmlFilePath)} (ID: {fileId})");
-            }
-            else
+            var result = await dialog.ShowDialog<bool?>(MainWindow!);
+
+            if (result == true)
             {
-                OutputText += "❌ Помилка завантаження на Google Drive";
+                // File was downloaded from Google Drive
+                if (dialogVm?.SelectedFilePath != null && File.Exists(dialogVm.SelectedFilePath))
+                {
+                    XmlFilePath = dialogVm.SelectedFilePath;
+                    OutputText = $"✅ Файл завантажено з Google Drive!\n";
+                    OutputText += $"📄 Файл: {Path.GetFileName(XmlFilePath)}\n";
+                    OutputText += $"📂 Шлях: {XmlFilePath}\n\n";
+                    OutputText += $"💡 Тепер ви можете працювати з цим файлом";
+
+                    LoadAvailableTags();
+                    _logger.Log(LogLevel.Saving, $"Завантажено з Google Drive: {Path.GetFileName(XmlFilePath)}");
+                }
             }
         }
         catch (Exception ex)
         {
-            OutputText = $"❌ Помилка завантаження на Google Drive:\n{ex.Message}\n\n📋 Деталі:\n{ex.StackTrace}";
+            OutputText = $"❌ Помилка роботи з Google Drive:\n{ex.Message}";
             _logger.Log(LogLevel.Saving, $"Помилка Google Drive: {ex.Message}");
         }
     }
@@ -477,6 +420,7 @@ public partial class MainWindowViewModel : ViewModelBase
     private void Clear()
     {
         FilterValue = string.Empty;
+        SelectedTag = null;
         SelectedAttribute = null;
         OutputText = "Параметри пошуку очищено.";
     }
@@ -516,31 +460,110 @@ public partial class MainWindowViewModel : ViewModelBase
         _parserContext.SetParser(parser);
     }
 
-    private void LoadAvailableAttributes()
+    private void LoadAvailableTags()
     {
+        AvailableTags.Clear();
         AvailableAttributes.Clear();
 
-        var attributes = SelectedEntityType switch
+        if (string.IsNullOrEmpty(XmlFilePath) || !File.Exists(XmlFilePath))
         {
-            "Книги" => new[] { "id", "isbn", "year", "available", "language", "edition", "Title", "Category", "Publisher" },
-            "Читачі" => new[] { "id", "status", "membershipType", "Faculty", "Department", "Position" },
-            "Видані книги" => new[] { "borrowId", "readerId", "bookId", "status" },
-            _ => Array.Empty<string>()
-        };
-
-        foreach (var attr in attributes)
-        {
-            AvailableAttributes.Add(attr);
+            return;
         }
 
-        if (AvailableAttributes.Any())
+        try
         {
-            SelectedAttribute = AvailableAttributes[0];
+            // Use LINQ to XML for dynamic tag discovery from entire document
+            var doc = System.Xml.Linq.XDocument.Load(XmlFilePath);
+
+            // Get all unique element names (tags) from the entire XML document
+            var tags = doc.Descendants()
+                .Select(e => e.Name.LocalName)
+                .Where(name => name != "Library") // Exclude root element
+                .Distinct()
+                .OrderBy(t => t);
+
+            foreach (var tag in tags)
+            {
+                AvailableTags.Add(tag);
+            }
+
+            if (AvailableTags.Any())
+            {
+                SelectedTag = AvailableTags[0];
+            }
+
+            _logger.Log(LogLevel.Filtering, $"Завантажено {AvailableTags.Count} тегів з XML файлу");
+        }
+        catch (Exception ex)
+        {
+            _logger.Log(LogLevel.Filtering, $"Помилка завантаження тегів: {ex.Message}");
         }
     }
 
-    partial void OnSelectedEntityTypeChanged(string value)
+    private void LoadAttributesForSelectedTag()
     {
-        LoadAvailableAttributes();
+        AvailableAttributes.Clear();
+
+        if (string.IsNullOrEmpty(XmlFilePath) || !File.Exists(XmlFilePath) || string.IsNullOrEmpty(SelectedTag))
+        {
+            return;
+        }
+
+        try
+        {
+            // Use LINQ to XML for dynamic attribute discovery from entire document
+            var doc = System.Xml.Linq.XDocument.Load(XmlFilePath);
+
+            // Find the first element with the selected tag name anywhere in the document
+            var firstElement = doc.Descendants(SelectedTag).FirstOrDefault();
+
+            if (firstElement != null)
+            {
+                // Get all attribute names from this element
+                var attributes = firstElement.Attributes()
+                    .Select(a => a.Name.LocalName)
+                    .OrderBy(a => a);
+
+                foreach (var attr in attributes)
+                {
+                    AvailableAttributes.Add(attr);
+                }
+
+                if (AvailableAttributes.Any())
+                {
+                    SelectedAttribute = AvailableAttributes[0];
+                }
+            }
+
+            _logger.Log(LogLevel.Filtering, $"Завантажено {AvailableAttributes.Count} атрибутів для тега {SelectedTag}");
+        }
+        catch (Exception ex)
+        {
+            _logger.Log(LogLevel.Filtering, $"Помилка завантаження атрибутів: {ex.Message}");
+        }
+    }
+
+    partial void OnSelectedTagChanged(string? value)
+    {
+        LoadAttributesForSelectedTag();
+    }
+
+    private string GetBeautifulAttributeName(string attributeName)
+    {
+        return attributeName switch
+        {
+            "id" => "🆔 ID",
+            "title" => "📖 Назва",
+            "author" => "✍️ Автор",
+            "reader" => "👤 Читач",
+            "year" => "📅 Рік",
+            "category" => "📂 Категорія",
+            "isbn" => "📚 ISBN",
+            "fullName" => "👤 Повне ім'я",
+            "faculty" => "🎓 Факультет",
+            "course" => "📊 Курс",
+            "email" => "📧 Email",
+            _ => $"📌 {attributeName}"
+        };
     }
 }
