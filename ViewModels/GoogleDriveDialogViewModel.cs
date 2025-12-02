@@ -35,7 +35,7 @@ public partial class GoogleDriveDialogViewModel : ViewModelBase
     private string _currentXmlPath = string.Empty;
 
     [ObservableProperty]
-    private ObservableCollection<string> _uploadFormats = new() { "XML", "HTML" };
+    private ObservableCollection<string> _uploadFormats = new() { "XML", "HTML", "XSLT" };
 
     [ObservableProperty]
     private string _selectedUploadFormat = "XML";
@@ -63,13 +63,13 @@ public partial class GoogleDriveDialogViewModel : ViewModelBase
             IsLoading = true;
             StatusText = "⏳ Завантаження списку файлів з Google Drive...";
 
-            var driveFiles = await _googleDriveService.ListFilesAsync(query: "(mimeType='application/xml' or mimeType='text/html') and trashed=false");
+            var driveFiles = await _googleDriveService.ListFilesAsync(query: "(mimeType='application/xml' or mimeType='text/html' or mimeType='application/xslt+xml' or mimeType='text/xsl') and trashed=false");
 
             Files.Clear();
 
             if (driveFiles.Count == 0)
             {
-                StatusText = "📭 XML та HTML файлів не знайдено на Google Drive";
+                StatusText = "📭 XML, HTML та XSLT файлів не знайдено на Google Drive";
             }
             else
             {
@@ -85,7 +85,7 @@ public partial class GoogleDriveDialogViewModel : ViewModelBase
                     });
                 }
 
-                StatusText = $"✅ Знайдено {Files.Count} XML та HTML файлів";
+                StatusText = $"✅ Знайдено {Files.Count} файлів (XML, HTML, XSLT)";
             }
 
             _logger.Log(LogLevel.Saving, $"Завантажено список файлів з Google Drive: {Files.Count} файлів");
@@ -187,8 +187,20 @@ public partial class GoogleDriveDialogViewModel : ViewModelBase
             string fileToUpload = CurrentXmlPath;
             var baseFileName = Path.GetFileNameWithoutExtension(CurrentXmlPath);
 
-            // If HTML format selected, transform XML to HTML first
-            if (SelectedUploadFormat == "HTML")
+            // Handle different upload formats
+            if (SelectedUploadFormat == "XSLT")
+            {
+                // Upload XSLT file
+                var xsltPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "library.xslt");
+                if (!File.Exists(xsltPath))
+                {
+                    StatusText = "❌ XSLT файл не знайдено";
+                    return;
+                }
+                fileToUpload = xsltPath;
+                StatusText = $"⏳ Завантаження {Path.GetFileName(fileToUpload)} на Google Drive...";
+            }
+            else if (SelectedUploadFormat == "HTML")
             {
                 StatusText = "⏳ Трансформація XML в HTML...";
 
@@ -215,6 +227,7 @@ public partial class GoogleDriveDialogViewModel : ViewModelBase
             }
             else
             {
+                // XML format
                 StatusText = $"⏳ Завантаження {Path.GetFileName(fileToUpload)} на Google Drive...";
             }
 

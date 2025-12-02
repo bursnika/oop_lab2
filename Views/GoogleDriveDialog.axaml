@@ -6,7 +6,7 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
         x:Class="LibraryXmlProcessor.Views.GoogleDriveDialog"
         x:DataType="vm:GoogleDriveDialogViewModel"
-        Title="Google Drive - XML та HTML файли"
+        Title="Google Drive - XML, HTML та XSLT файли"
         Width="900" Height="650"
         WindowStartupLocation="CenterOwner"
         Background="#FFF5F7"
@@ -75,7 +75,7 @@
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                     <TextBlock Text="☁️" FontSize="32" Margin="0,0,15,0"/>
                     <StackPanel VerticalAlignment="Center">
-                        <TextBlock Text="Google Drive - XML та HTML файли"
+                        <TextBlock Text="Google Drive - XML, HTML та XSLT файли"
                                    FontSize="24" FontWeight="Bold" Foreground="White"
                                    Margin="0,0,0,5"/>
                         <TextBlock Text="Завантажуйте та зберігайте ваші файли"
@@ -100,7 +100,7 @@
                 <Grid Grid.Row="0" Margin="0,0,0,15">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="📁" FontSize="20" Margin="0,0,10,0"/>
-                        <TextBlock Text="Ваші XML та HTML файли" FontSize="17" FontWeight="Bold"
+                        <TextBlock Text="Ваші XML, HTML та XSLT файли" FontSize="17" FontWeight="Bold"
                                    Foreground="#333333" VerticalAlignment="Center"/>
                     </StackPanel>
 
@@ -138,7 +138,7 @@
                             <TextBlock Text="📭" FontSize="48" TextAlignment="Center" Margin="0,0,0,15"/>
                             <TextBlock Text="Файлів не знайдено" FontSize="16" Foreground="#999999"
                                        TextAlignment="Center" Margin="0,0,0,5"/>
-                            <TextBlock Text="Завантажте XML або HTML файл на Google Drive" FontSize="13" Foreground="#BBBBBB"
+                            <TextBlock Text="Завантажте XML, HTML або XSLT файл на Google Drive" FontSize="13" Foreground="#BBBBBB"
                                        TextAlignment="Center"/>
                         </StackPanel>
 

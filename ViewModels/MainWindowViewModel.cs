@@ -31,6 +31,9 @@ public partial class MainWindowViewModel : ViewModelBase
     private string _xmlFilePath = string.Empty;
 
     [ObservableProperty]
+    private string _xsltFilePath = string.Empty;
+
+    [ObservableProperty]
     private string _outputText = "Виберіть XML файл для початку роботи...";
 
     [ObservableProperty]
@@ -114,6 +117,13 @@ public partial class MainWindowViewModel : ViewModelBase
             OutputText = $"✅ Завантажено XML файл за замовчуванням: {Path.GetFileName(XmlFilePath)}\n📂 Шлях: {XmlFilePath}\n\n💡 Виберіть тип сутності та натисніть 'Пошук' для перегляду даних";
             LoadAvailableTags();
         }
+
+        // Load default XSLT file
+        var defaultXsltPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "library.xslt");
+        if (File.Exists(defaultXsltPath))
+        {
+            XsltFilePath = defaultXsltPath;
+        }
     }
 
     [RelayCommand]
@@ -159,6 +169,55 @@ public partial class MainWindowViewModel : ViewModelBase
                 OutputText = $"✅ Вибрано XML файл: {Path.GetFileName(XmlFilePath)}\n📂 Шлях: {XmlFilePath}";
                 LoadAvailableTags();
                 _logger.Log(LogLevel.Filtering, $"Завантажено XML файл: {Path.GetFileName(XmlFilePath)}");
+            }
+        }
+        catch (Exception ex)
+        {
+            OutputText = $"❌ Помилка вибору файлу: {ex.Message}";
+        }
+    }
+
+    [RelayCommand]
+    private async Task SelectXsltFile()
+    {
+        try
+        {
+            if (MainWindow?.StorageProvider == null)
+            {
+                // Fallback to default file
+                var defaultPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "library.xslt");
+                if (File.Exists(defaultPath))
+                {
+                    XsltFilePath = defaultPath;
+                    OutputText = $"Вибрано XSLT файл: {Path.GetFileName(XsltFilePath)}";
+                }
+                return;
+            }
+
+            var filePickerOptions = new FilePickerOpenOptions
+            {
+                Title = "Оберіть XSLT файл",
+                AllowMultiple = false,
+                FileTypeFilter = new[]
+                {
+                    new FilePickerFileType("XSLT Files")
+                    {
+                        Patterns = new[] { "*.xslt", "*.xsl" }
+                    },
+                    new FilePickerFileType("All Files")
+                    {
+                        Patterns = new[] { "*.*" }
+                    }
+                }
+            };
+
+            var result = await MainWindow.StorageProvider.OpenFilePickerAsync(filePickerOptions);
+
+            if (result.Count > 0)
+            {
+                XsltFilePath = result[0].Path.LocalPath;
+                OutputText = $"✅ Вибрано XSLT файл: {Path.GetFileName(XsltFilePath)}\n📂 Шлях: {XsltFilePath}";
+                _logger.Log(LogLevel.Transformation, $"Завантажено XSLT файл: {Path.GetFileName(XsltFilePath)}");
             }
         }
         catch (Exception ex)
@@ -271,15 +330,20 @@ public partial class MainWindowViewModel : ViewModelBase
             return;
         }
 
-        try
+        // Use selected XSLT or default
+        var xsltPath = XsltFilePath;
+        if (string.IsNullOrEmpty(xsltPath) || !File.Exists(xsltPath))
         {
-            var xsltPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "library.xslt");
+            xsltPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "library.xslt");
             if (!File.Exists(xsltPath))
             {
                 OutputText = "❌ XSLT файл не знайдено!";
                 return;
             }
+        }
 
+        try
+        {
             var fileName = $"library_transformed_{DateTime.Now:yyyyMMdd_HHmmss}";
             var outputPath = await _transformationService.TransformToHtmlAsync(XmlFilePath, xsltPath, fileName);
 
@@ -327,15 +391,20 @@ public partial class MainWindowViewModel : ViewModelBase
             return;
         }
 
-        try
+        // Use selected XSLT or default
+        var xsltPath = XsltFilePath;
+        if (string.IsNullOrEmpty(xsltPath) || !File.Exists(xsltPath))
         {
-            var xsltPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "library.xslt");
+            xsltPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "library.xslt");
             if (!File.Exists(xsltPath))
             {
                 OutputText = "❌ XSLT файл не знайдено!";
                 return;
             }
+        }
 
+        try
+        {
             var factory = new HtmlExporterFactory(xsltPath);
             factory.LoadXmlFile(XmlFilePath);
 
@@ -348,6 +417,45 @@ public partial class MainWindowViewModel : ViewModelBase
         catch (Exception ex)
         {
             OutputText = $"Помилка експорту: {ex.Message}";
+        }
+    }
+
+    [RelayCommand]
+    private async Task ExportToXslt()
+    {
+        // Use selected XSLT or default
+        var xsltPath = XsltFilePath;
+        if (string.IsNullOrEmpty(xsltPath) || !File.Exists(xsltPath))
+        {
+            xsltPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "library.xslt");
+            if (!File.Exists(xsltPath))
+            {
+                OutputText = "❌ XSLT файл не знайдено!";
+                return;
+            }
+        }
+
+        try
+        {
+            // Copy XSLT file to Exports folder
+            var projectRoot = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", ".."));
+            var outputPath = Path.Combine(projectRoot, "Exports");
+            if (!Directory.Exists(outputPath))
+            {
+                Directory.CreateDirectory(outputPath);
+            }
+
+            var fileName = $"library_stylesheet_{DateTime.Now:yyyyMMdd_HHmmss}.xslt";
+            var outputFile = Path.Combine(outputPath, fileName);
+
+            await Task.Run(() => File.Copy(xsltPath, outputFile, true));
+
+            _logger.Log(LogLevel.Saving, $"Експортовано XSLT файл: {fileName}");
+            OutputText = $"✅ XSLT файл успішно збережено:\n📂 {outputFile}";
+        }
+        catch (Exception ex)
+        {
+            OutputText = $"Помилка експорту XSLT: {ex.Message}";
         }
     }
 

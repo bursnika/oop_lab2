@@ -128,30 +128,59 @@
             <StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
                     <TextBlock Text="📁" FontSize="20" Margin="0,0,8,0"/>
-                    <TextBlock Text="Вибір XML файлу" FontSize="17" FontWeight="Bold"
+                    <TextBlock Text="Вибір файлів" FontSize="17" FontWeight="Bold"
                                Foreground="#333333"/>
                 </StackPanel>
 
-                <Border Background="#FFF9FB" CornerRadius="8" Padding="15">
-                    <StackPanel>
-                        <Button Command="{Binding SelectXmlFileCommand}"
-                                HorizontalAlignment="Stretch" Margin="0,0,0,10">
-                            <Button.Background>
-                                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
-                                    <GradientStop Color="#FFD1DC" Offset="0"/>
-                                    <GradientStop Color="#FFB6C1" Offset="1"/>
-                                </LinearGradientBrush>
-                            </Button.Background>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <TextBlock Text="📄" FontSize="16" Margin="0,0,8,0"/>
-                                <TextBlock Text="Вибрати XML файл" Foreground="White"/>
-                            </StackPanel>
-                        </Button>
-                        <TextBlock Text="{Binding XmlFilePath}" TextWrapping="Wrap"
-                                   FontSize="11" Foreground="#999999" MaxHeight="45"
-                                   TextTrimming="CharacterEllipsis"/>
-                    </StackPanel>
-                </Border>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="15"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0" Background="#FFF9FB" CornerRadius="8" Padding="15">
+                        <StackPanel>
+                            <Button Command="{Binding SelectXmlFileCommand}"
+                                    HorizontalAlignment="Stretch" Margin="0,0,0,10">
+                                <Button.Background>
+                                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
+                                        <GradientStop Color="#FFD1DC" Offset="0"/>
+                                        <GradientStop Color="#FFB6C1" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Button.Background>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <TextBlock Text="📄" FontSize="16" Margin="0,0,8,0"/>
+                                    <TextBlock Text="Вибрати XML файл" Foreground="White"/>
+                                </StackPanel>
+                            </Button>
+                            <TextBlock Text="{Binding XmlFilePath}" TextWrapping="Wrap"
+                                       FontSize="11" Foreground="#999999" MaxHeight="45"
+                                       TextTrimming="CharacterEllipsis"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="2" Background="#F5FCF9" CornerRadius="8" Padding="15">
+                        <StackPanel>
+                            <Button Command="{Binding SelectXsltFileCommand}"
+                                    HorizontalAlignment="Stretch" Margin="0,0,0,10">
+                                <Button.Background>
+                                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
+                                        <GradientStop Color="#A8E6CF" Offset="0"/>
+                                        <GradientStop Color="#98D8C8" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Button.Background>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <TextBlock Text="🎨" FontSize="16" Margin="0,0,8,0"/>
+                                    <TextBlock Text="Вибрати XSLT файл" Foreground="White"/>
+                                </StackPanel>
+                            </Button>
+                            <TextBlock Text="{Binding XsltFilePath}" TextWrapping="Wrap"
+                                       FontSize="11" Foreground="#999999" MaxHeight="45"
+                                       TextTrimming="CharacterEllipsis"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
             </StackPanel>
         </Border>
 
@@ -299,6 +328,7 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
                 <Button Grid.Column="0" Command="{Binding TransformToHtmlCommand}">
@@ -331,7 +361,17 @@
                     </StackPanel>
                 </Button>
 
-                <Button Grid.Column="3" Command="{Binding UploadToGoogleDriveCommand}">
+                <Button Grid.Column="3" Command="{Binding ExportToXsltCommand}">
+                    <Button.Background>
+                        <SolidColorBrush Color="#D4A5FF"/>
+                    </Button.Background>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <TextBlock Text="🎨" FontSize="14" Margin="0,0,6,0"/>
+                        <TextBlock Text="Експорт XSLT" Foreground="White" FontSize="12"/>
+                    </StackPanel>
+                </Button>
+
+                <Button Grid.Column="4" Command="{Binding UploadToGoogleDriveCommand}">
                     <Button.Background>
                         <SolidColorBrush Color="#98D8C8"/>
                     </Button.Background>
@@ -341,7 +381,7 @@
                     </StackPanel>
                 </Button>
 
-                <Button Grid.Column="4" Command="{Binding OpenLogFileCommand}">
+                <Button Grid.Column="5" Command="{Binding OpenLogFileCommand}">
                     <Button.Background>
                         <SolidColorBrush Color="#FFB6C1"/>
                     </Button.Background>
@@ -351,7 +391,7 @@
                     </StackPanel>
                 </Button>
 
-                <Button Grid.Column="5" Command="{Binding ClearCommand}">
+                <Button Grid.Column="6" Command="{Binding ClearCommand}">
                     <Button.Background>
                         <SolidColorBrush Color="#FFC9D6"/>
                     </Button.Background>
@@ -361,7 +401,7 @@
                     </StackPanel>
                 </Button>
 
-                <Button Grid.Column="6" Click="OnExitClick">
+                <Button Grid.Column="7" Click="OnExitClick">
                     <Button.Background>
                         <SolidColorBrush Color="#FFB0B0"/>
                     </Button.Background>
